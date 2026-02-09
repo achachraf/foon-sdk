@@ -1,8 +1,8 @@
-# FON SDK
+# FOON SDK
 
 > TypeScript SDK for semantic JSON transformation using LLMs
 
-FON SDK transforms free-form JSON to schema-compliant JSON using AI-powered semantic mapping. It accepts structurally incorrect but semantically correct JSON and transforms it to match your target schema.
+FOON SDK transforms free-form JSON to schema-compliant JSON using AI-powered semantic mapping. It accepts structurally incorrect but semantically correct JSON and transforms it to match your target schema.
 
 ## Key Features
 
@@ -17,13 +17,13 @@ FON SDK transforms free-form JSON to schema-compliant JSON using AI-powered sema
 ## Installation
 
 ```bash
-npm install fon-sdk
+npm install foon-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { transform, GeminiProvider } from 'fon-sdk';
+import { transform, OpenAIProvider } from 'foon-sdk';
 
 // Define your target schema
 const userSchema = {
@@ -33,13 +33,13 @@ const userSchema = {
       type: 'object',
       properties: {
         given: { type: 'string' },
-        family: { type: 'string' }
+        family: { type: 'string' },
       },
-      required: ['given', 'family']
+      required: ['given', 'family'],
     },
-    email: { type: 'string', format: 'email' }
+    email: { type: 'string', format: 'email' },
   },
-  required: ['name', 'email']
+  required: ['name', 'email'],
 };
 
 // Transform messy input
@@ -47,15 +47,15 @@ const result = await transform(
   {
     firstname: 'John',
     lastname: 'Doe',
-    email: 'john.doe@example.com'
+    email: 'john.doe@example.com',
   },
   {
     schema: userSchema,
-    provider: new GeminiProvider({
-      apiKey: process.env.GEMINI_API_KEY,
-      model: 'gemini-1.5-flash'
+    provider: new OpenAIProvider({
+      apiKey: process.env.OPENAI_API_KEY,
+      model: 'gpt-5-nano',
     }),
-    confidenceThreshold: 0.85
+    confidenceThreshold: 0.85,
   }
 );
 
@@ -70,23 +70,26 @@ if (result.ok) {
 
 ## Express Middleware
 
-FON SDK includes Express middleware for seamless integration with Express applications.
+FOON SDK includes Express middleware for seamless integration with Express applications.
 
 ### Quick Start
 
 ```typescript
 import express from 'express';
-import { createFonRouter } from 'fon-sdk/express';
-import { GeminiProvider } from 'fon-sdk';
+import { createFonRouter } from 'foon-sdk/express';
+import { OpenAIProvider } from 'foon-sdk';
 
 const app = express();
 app.use(express.json());
 
-// Create FON router
+// Create FOON router
 const fonRouter = createFonRouter({
-  provider: new GeminiProvider({ apiKey: process.env.GEMINI_API_KEY }),
-  prefix: '/foon',                // Default: '/foon'
-  confidenceThreshold: 0.85,      // Default: 0.85
+  provider: new OpenAIProvider({
+    apiKey: process.env.OPENAI_API_KEY,
+    model: 'gpt-5-nano'
+  }),
+  prefix: '/foon', // Default: '/foon'
+  confidenceThreshold: 0.85, // Default: 0.85
 });
 
 // Register routes with schemas
@@ -114,9 +117,10 @@ app.listen(3000);
 The Express middleware creates **two routes** for each registration:
 
 1. **Original route** (e.g., `/users`) - Works normally without transformation
-2. **FON route** (e.g., `/foon/users`) - Applies FON transformation before handler
+2. **FOON route** (e.g., `/foon/users`) - Applies FOON transformation before handler
 
-Requests to FON routes:
+Requests to FOON routes:
+
 - Transform `req.body` using the configured schema
 - Replace `req.body` with validated output
 - Add trace ID header (`X-FON-Trace-Id`)
@@ -126,16 +130,16 @@ Requests to FON routes:
 
 ```typescript
 interface FonRouterConfig {
-  provider: Provider;                  // LLM provider (required)
-  prefix?: string;                    // Route prefix (default: '/foon')
-  methods?: HttpMethod[];             // Methods to transform (default: ['POST', 'PUT', 'PATCH'])
-  confidenceThreshold?: number;       // Confidence threshold (default: 0.85)
-  cache?: Cache;                      // Cache instance
-  security?: SecurityOptions;         // Security options
-  traceHeader?: string;               // Trace header name (default: 'X-FON-Trace-Id')
-  onError?: ErrorHandler;             // Custom error handler
-  createOriginalRoutes?: boolean;     // Create original routes (default: true)
-  verbose?: boolean;                  // Verbose logging (default: false)
+  provider: Provider; // LLM provider (required)
+  prefix?: string; // Route prefix (default: '/foon')
+  methods?: HttpMethod[]; // Methods to transform (default: ['POST', 'PUT', 'PATCH'])
+  confidenceThreshold?: number; // Confidence threshold (default: 0.85)
+  cache?: Cache; // Cache instance
+  security?: SecurityOptions; // Security options
+  traceHeader?: string; // Trace header name (default: 'X-FON-Trace-Id')
+  onError?: ErrorHandler; // Custom error handler
+  createOriginalRoutes?: boolean; // Create original routes (default: true)
+  verbose?: boolean; // Verbose logging (default: false)
 }
 ```
 
@@ -143,10 +147,10 @@ interface FonRouterConfig {
 
 ```typescript
 interface RouteConfig {
-  schema: object;                     // JSON Schema for this route
-  handler: RequestHandler;            // Express handler
-  createOriginal?: boolean;           // Override: create original route
-  confidenceThreshold?: number;       // Override: confidence threshold for this route
+  schema: object; // JSON Schema for this route
+  handler: RequestHandler; // Express handler
+  createOriginal?: boolean; // Override: create original route
+  confidenceThreshold?: number; // Override: confidence threshold for this route
 }
 ```
 
@@ -165,7 +169,7 @@ fonRouter.post('/users', {
 
 // Now you have:
 // POST /users       - Original route (untransformed)
-// POST /foon/users  - FON route (transformed)
+// POST /foon/users  - FOON route (transformed)
 ```
 
 #### Custom Error Handler
@@ -190,7 +194,7 @@ const fonRouter = createFonRouter({
 ```typescript
 const fonRouter = createFonRouter({
   provider,
-  createOriginalRoutes: false,  // Only create FON routes
+  createOriginalRoutes: false, // Only create FOON routes
 });
 
 // Now only /foon/users exists, not /users
@@ -214,14 +218,14 @@ fonRouter.post('/users', { schema, handler });
 fonRouter.post('/users', {
   schema: userSchema,
   handler: createUserHandler,
-  createOriginal: false,           // Don't create /users for this route
-  confidenceThreshold: 0.90,       // Higher threshold for this route
+  createOriginal: false, // Don't create /users for this route
+  confidenceThreshold: 0.9, // Higher threshold for this route
 });
 ```
 
 ### Trace Headers
 
-FON routes automatically add headers to responses:
+FOON routes automatically add headers to responses:
 
 - `X-FON-Trace-Id`: Unique trace ID for debugging
 - `X-FON-Timing-Total`: Total processing time (verbose mode)
@@ -242,6 +246,7 @@ When transformation fails, the default error handler returns:
 ```
 
 HTTP status codes:
+
 - `400` - Bad Request (validation error, confidence too low)
 - `413` - Payload Too Large (security limits exceeded)
 - `500` - Internal Server Error (execution error)
@@ -272,7 +277,8 @@ fonRouter.post('/users', {
 
 ### Key Principle
 
-FON SDK does NOT let the LLM generate the final JSON. Instead:
+FOON SDK does NOT let the LLM generate the final JSON. Instead:
+
 - LLM returns a **mapping plan** with confidence scores
 - SDK executes the plan **deterministically**
 - Output is **always validated** against your schema
@@ -286,20 +292,22 @@ This approach ensures reliability, explainability, and prevents hallucinations.
 Main transformation function.
 
 **Parameters:**
+
 - `input: unknown` - The input JSON to transform
 - `options: TransformOptions` - Transformation options
 
 **Options:**
+
 ```typescript
 interface TransformOptions {
-  mode?: 'SEMANTIC';                    // Only SEMANTIC mode in v1.0
-  schema: object | SchemaAdapter;       // JSON Schema object
-  provider: Provider;                   // LLM provider instance
-  confidenceThreshold?: number;         // Default: 0.85
-  cache?: Cache;                        // Optional cache instance
-  verbose?: boolean;                    // Enable verbose output
-  security?: SecurityOptions;           // Security settings
-  hooks?: TransformHooks;               // Observability hooks
+  mode?: 'SEMANTIC'; // Only SEMANTIC mode in v1.0
+  schema: object | SchemaAdapter; // JSON Schema object
+  provider: Provider; // LLM provider instance
+  confidenceThreshold?: number; // Default: 0.85
+  cache?: Cache; // Optional cache instance
+  verbose?: boolean; // Enable verbose output
+  security?: SecurityOptions; // Security settings
+  hooks?: TransformHooks; // Observability hooks
 }
 ```
 
@@ -307,10 +315,10 @@ interface TransformOptions {
 
 ```typescript
 interface TransformResult {
-  ok: boolean;                // Success flag
-  output?: unknown;           // Transformed output (if successful)
-  error?: FONError;          // Error details (if failed)
-  trace: TraceReport;        // Complete trace report
+  ok: boolean; // Success flag
+  output?: unknown; // Transformed output (if successful)
+  error?: FONError; // Error details (if failed)
+  trace: TraceReport; // Complete trace report
 }
 ```
 
@@ -319,38 +327,38 @@ interface TransformResult {
 #### GeminiProvider
 
 ```typescript
-import { GeminiProvider } from 'fon-sdk';
+import { GeminiProvider } from 'foon-sdk';
 
 const provider = new GeminiProvider({
   apiKey: process.env.GEMINI_API_KEY,
-  model: 'gemini-1.5-flash',           // Optional, default: gemini-1.5-flash
-  timeout: 30000,                      // Optional, default: 30s
+  model: 'gemini-1.5-flash', // Optional, default: gemini-1.5-flash
+  timeout: 30000, // Optional, default: 30s
 });
 ```
 
 #### OpenAIProvider
 
 ```typescript
-import { OpenAIProvider } from 'fon-sdk';
+import { OpenAIProvider } from 'foon-sdk';
 
 const provider = new OpenAIProvider({
   apiKey: process.env.OPENAI_API_KEY,
-  model: 'gpt-4o-mini',                // Optional, default: gpt-4o-mini
-  timeout: 30000,                      // Optional, default: 30s
-  baseUrl: 'https://api.openai.com/v1' // Optional, for custom endpoints
+  model: 'gpt-4o-mini', // Optional, default: gpt-4o-mini
+  timeout: 30000, // Optional, default: 30s
+  baseUrl: 'https://api.openai.com/v1', // Optional, for custom endpoints
 });
 ```
 
 #### OllamaProvider
 
 ```typescript
-import { OllamaProvider } from 'fon-sdk';
+import { OllamaProvider } from 'foon-sdk';
 
 const provider = new OllamaProvider({
-  apiKey: process.env.OLLAMA_API_KEY,  // Optional for local Ollama
-  model: 'llama2',                     // Optional, default: llama2
-  timeout: 60000,                      // Optional, default: 30s (Ollama can be slower)
-  baseUrl: 'http://localhost:11434'    // Optional, default: http://localhost:11434
+  apiKey: process.env.OLLAMA_API_KEY, // Optional for local Ollama
+  model: 'llama2', // Optional, default: llama2
+  timeout: 60000, // Optional, default: 30s (Ollama can be slower)
+  baseUrl: 'http://localhost:11434', // Optional, default: http://localhost:11434
 });
 ```
 
@@ -363,13 +371,13 @@ const result = await transform(input, {
   schema,
   provider,
   security: {
-    maxInputSize: 1024 * 1024,         // 1MB default
-    maxDepth: 10,                       // Max nesting depth
-    maxKeys: 1000,                      // Max number of keys
-    redactKeys: ['password', 'token'],  // Keys to redact
-    sanitizePrompt: true,               // Prompt injection protection
-    includeValues: false,               // Don't send values to LLM (structure only)
-  }
+    maxInputSize: 1024 * 1024, // 1MB default
+    maxDepth: 10, // Max nesting depth
+    maxKeys: 1000, // Max number of keys
+    redactKeys: ['password', 'token'], // Keys to redact
+    sanitizePrompt: true, // Prompt injection protection
+    includeValues: false, // Don't send values to LLM (structure only)
+  },
 });
 ```
 
@@ -379,15 +387,15 @@ const result = await transform(input, {
 
 ```typescript
 const result = await transform(
-  { age: '30' },  // String instead of number
+  { age: '30' }, // String instead of number
   {
     schema: {
       type: 'object',
       properties: {
-        age: { type: 'integer' }
-      }
+        age: { type: 'integer' },
+      },
     },
-    provider
+    provider,
   }
 );
 // Output: { age: 30 }  - Automatically converted to number
@@ -399,7 +407,7 @@ const result = await transform(
 const result = await transform(
   {
     city: 'San Francisco',
-    country: 'USA'
+    country: 'USA',
   },
   {
     schema: {
@@ -409,12 +417,12 @@ const result = await transform(
           type: 'object',
           properties: {
             city: { type: 'string' },
-            country: { type: 'string' }
-          }
-        }
-      }
+            country: { type: 'string' },
+          },
+        },
+      },
     },
-    provider
+    provider,
   }
 );
 // Output: { address: { city: 'San Francisco', country: 'USA' } }
@@ -426,7 +434,7 @@ const result = await transform(
 const result = await transform(input, {
   schema,
   provider,
-  confidenceThreshold: 0.90  // Fail if any mapping < 90% confidence
+  confidenceThreshold: 0.9, // Fail if any mapping < 90% confidence
 });
 
 if (!result.ok && result.error?.category === 'CONFIDENCE_TOO_LOW') {
@@ -437,14 +445,17 @@ if (!result.ok && result.error?.category === 'CONFIDENCE_TOO_LOW') {
 ### Using Cache
 
 ```typescript
-import { transform, GeminiProvider, LRUCache } from 'fon-sdk';
+import { transform, OpenAIProvider, LRUCache } from 'foon-sdk';
 
 const cache = new LRUCache({ max: 100, ttl: 3600000 }); // 100 entries, 1 hour TTL
 
 const result = await transform(input, {
   schema,
-  provider,
-  cache
+  provider: new OpenAIProvider({
+    apiKey: process.env.OPENAI_API_KEY,
+    model: 'gpt-5-nano',
+  }),
+  cache,
 });
 
 console.log('Cache hit:', result.trace.cache.hit);
@@ -452,7 +463,7 @@ console.log('Cache hit:', result.trace.cache.hit);
 
 ## Error Handling
 
-FON SDK provides detailed error categories:
+FOON SDK provides detailed error categories:
 
 ```typescript
 if (!result.ok) {
@@ -488,19 +499,19 @@ Every transformation includes a comprehensive trace:
 
 ```typescript
 interface TraceReport {
-  traceId: string;                      // Unique trace ID
+  traceId: string; // Unique trace ID
   mode: 'SEMANTIC';
-  provider: string;                     // Provider name
-  promptVersion: string;                // Prompt version
+  provider: string; // Provider name
+  promptVersion: string; // Prompt version
   timings: {
-    total: number;                      // Total time (ms)
-    proposal: number;                   // LLM call time
-    execution: number;                  // Execution time
-    validation: number;                 // Validation time
+    total: number; // Total time (ms)
+    proposal: number; // LLM call time
+    execution: number; // Execution time
+    validation: number; // Validation time
   };
   mappingPlan: {
-    raw: string;                        // Raw LLM response
-    parsed: MappingPlan;                // Parsed mapping plan
+    raw: string; // Raw LLM response
+    parsed: MappingPlan; // Parsed mapping plan
   };
   execution: {
     assignmentsApplied: AssignmentTrace[];
@@ -539,7 +550,7 @@ npm run test:unit
 # Integration tests
 npm run test:integration
 
-# E2E tests (requires Gemini API key in .env.local)
+# E2E tests (requires OpenAI API key in .env.local)
 npm run test:e2e
 ```
 

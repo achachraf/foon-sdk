@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# FON SDK Express CRUD App - Test Requests
+# FOON SDK Express CRUD App - Test Requests
 # Make sure the Express app is running before executing this script:
 #   npx ts-node examples/express-crud-app.ts
 
 BASE_URL="http://localhost:3000"
 
 echo "======================================"
-echo "FON SDK Express CRUD App - Test Suite"
+echo "FOON SDK Express CRUD App - Test Suite"
 echo "======================================"
 echo ""
 
@@ -23,8 +23,8 @@ curl -s "$BASE_URL/" | json_pp
 echo ""
 echo ""
 
-# 2. Create user with FON transformation
-echo -e "${BLUE}2. POST /foon/users - Create user with messy fields (FON transformation)${NC}"
+# 2. Create user with FOON transformation
+echo -e "${BLUE}2. POST /foon/users - Create user with messy fields (FOON transformation)${NC}"
 echo -e "${YELLOW}   Input: firstname, lastname, email_address, user_age (string), user_role${NC}"
 echo -e "${YELLOW}   Expected: Transform to schema-compliant format${NC}"
 curl -s -X POST "$BASE_URL/foon/users" \
@@ -55,7 +55,7 @@ curl -s -X POST "$BASE_URL/users" \
 echo ""
 echo ""
 
-# 4. Create another user with FON
+# 4. Create another user with FOON
 echo -e "${BLUE}4. POST /foon/users - Create another user with different messy format${NC}"
 echo -e "${YELLOW}   Input: first_name, last_name, mail${NC}"
 curl -s -X POST "$BASE_URL/foon/users" \
@@ -81,8 +81,8 @@ curl -s "$BASE_URL/users/1" | json_pp
 echo ""
 echo ""
 
-# 7. Update user with FON
-echo -e "${BLUE}7. PUT /foon/users/1 - Update user with messy fields (FON transformation)${NC}"
+# 7. Update user with FOON
+echo -e "${BLUE}7. PUT /foon/users/1 - Update user with messy fields (FOON transformation)${NC}"
 echo -e "${YELLOW}   Input: first, new_email${NC}"
 curl -s -X PUT "$BASE_URL/foon/users/1" \
   -H "Content-Type: application/json" \

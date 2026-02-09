@@ -1,11 +1,11 @@
 /**
- * FON SDK Express Middleware
+ * FOON SDK Express Middleware
  *
  * @example
  * ```typescript
  * import express from 'express';
- * import { createFonRouter } from 'fon-sdk/express';
- * import { GeminiProvider } from 'fon-sdk';
+ * import { createFonRouter } from 'foon-sdk/express';
+ * import { GeminiProvider } from 'foon-sdk';
  *
  * const app = express();
  * app.use(express.json());

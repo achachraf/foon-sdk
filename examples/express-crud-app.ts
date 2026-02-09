@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { createFonRouter } from '../src/express';
-import { GeminiProvider } from '../src';
+import { OpenAIProvider } from '../src';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -80,23 +80,23 @@ const updateUserSchema = {
 
 async function main() {
   // Check for API key
-  if (!process.env.GEMINI_API_KEY) {
-    console.error('Error: GEMINI_API_KEY not found in .env.local');
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('Error: OPENAI_API_KEY not found in .env.local');
     console.log('Please create a .env.local file with:');
-    console.log('GEMINI_API_KEY=your_api_key_here');
+    console.log('OPENAI_API_KEY=your_api_key_here');
     process.exit(1);
   }
 
   const app = express();
   app.use(express.json());
 
-  // Create Gemini provider
-  const provider = new GeminiProvider({
-    apiKey: process.env.GEMINI_API_KEY,
-    model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+  // Create OpenAI provider
+  const provider = new OpenAIProvider({
+    apiKey: process.env.OPENAI_API_KEY,
+    model: process.env.OPENAI_MODEL || 'gpt-5-nano',
   });
 
-  // Create FON router
+  // Create FOON router
   const fonRouter = createFonRouter({
     provider,
     prefix: '/foon',
@@ -161,7 +161,7 @@ async function main() {
   };
 
   // ========================================
-  // Register Routes with FON Router
+  // Register Routes with FOON Router
   // ========================================
 
   fonRouter.post('/users', {
@@ -180,7 +180,7 @@ async function main() {
     handler: updateUserHandler,
   });
 
-  // Mount the FON router
+  // Mount the FOON router
   app.use(fonRouter.getRouter());
 
   // Add GET and DELETE routes manually (no transformation needed for these)
@@ -194,17 +194,17 @@ async function main() {
 
   app.get('/', (req, res) => {
     res.json({
-      message: 'FON SDK Express CRUD Example',
+      message: 'FOON SDK Express CRUD Example',
       routes: {
         'GET /': 'This info page',
         'GET /users': 'List all users',
         'GET /users/:id': 'Get single user',
         'POST /users': 'Create user (original - NO transformation)',
-        'POST /foon/users': 'Create user (FON - WITH transformation)',
+        'POST /foon/users': 'Create user (FOON - WITH transformation)',
         'PUT /users/:id': 'Update user (original - NO transformation)',
-        'PUT /foon/users/:id': 'Update user (FON - WITH transformation)',
+        'PUT /foon/users/:id': 'Update user (FOON - WITH transformation)',
         'PATCH /users/:id': 'Patch user (original - NO transformation)',
-        'PATCH /foon/users/:id': 'Patch user (FON - WITH transformation)',
+        'PATCH /foon/users/:id': 'Patch user (FOON - WITH transformation)',
         'DELETE /users/:id': 'Delete user',
       },
       examples: {
@@ -228,7 +228,7 @@ async function main() {
             user_age: '25',
             user_role: 'admin',
           },
-          note: 'FON will transform firstname/lastname to name.given/family, email_address to email, etc.',
+          note: 'FOON will transform firstname/lastname to name.given/family, email_address to email, etc.',
         },
         'Update with messy fields (transformation applied)': {
           method: 'PUT',
@@ -238,7 +238,7 @@ async function main() {
             last: 'Johnson',
             new_email: 'alice@example.com',
           },
-          note: 'FON will semantically map these to the correct schema fields',
+          note: 'FOON will semantically map these to the correct schema fields',
         },
       },
     });
@@ -252,7 +252,7 @@ async function main() {
   app.listen(PORT, () => {
     console.log(`
 ╔════════════════════════════════════════════════════╗
-║   FON SDK Express CRUD Example                     ║
+ ║   FOON SDK Express CRUD Example                     ║
 ║                                                    ║
 ║   Server running on http://localhost:${PORT}        ║
 ║                                                    ║
@@ -268,7 +268,7 @@ async function main() {
 ║        "email_address": "john@example.com",        ║
 ║        "user_age": "30"                            ║
 ║      }                                             ║
-║      → FON transforms to schema-compliant format   ║
+ ║      → FOON transforms to schema-compliant format   ║
 ║                                                    ║
 ║   3. POST http://localhost:${PORT}/users            ║
 ║      Body: {                                       ║

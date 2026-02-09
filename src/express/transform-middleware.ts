@@ -19,7 +19,7 @@ export interface TransformMiddlewareOptions {
 }
 
 /**
- * Create middleware that transforms request body using FON
+ * Create middleware that transforms request body using FOON
  */
 export function createTransformMiddleware(options: TransformMiddlewareOptions): RequestHandler {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -29,7 +29,7 @@ export function createTransformMiddleware(options: TransformMiddlewareOptions): 
         return next();
       }
 
-      // Run FON transform
+      // Run FOON transform
       const result = await transform(req.body, {
         schema: options.schema,
         provider: options.provider,
@@ -76,7 +76,10 @@ export function createTransformMiddleware(options: TransformMiddlewareOptions): 
       const fonError =
         error instanceof FONError
           ? error
-          : new FONError('EXECUTION_ERROR' as any, `Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
+          : new FONError(
+              'EXECUTION_ERROR' as any,
+              `Unexpected error: ${error instanceof Error ? error.message : String(error)}`
+            );
 
       return options.errorHandler(fonError, req, res, next);
     }

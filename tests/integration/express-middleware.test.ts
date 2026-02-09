@@ -20,7 +20,7 @@ describe('Express Middleware Integration', () => {
     required: ['name', 'email'],
   };
 
-  it('should transform request body on FON route', async () => {
+  it('should transform request body on FOON route', async () => {
     const app = express();
     app.use(express.json());
 
@@ -40,7 +40,7 @@ describe('Express Middleware Integration', () => {
       prefix: '/foon',
     });
 
-    // Handler that echoes the body (should be transformed on FON route)
+    // Handler that echoes the body (should be transformed on FOON route)
     const handler = (req: Request, res: Response) => {
       res.json(req.body);
     };
@@ -52,7 +52,7 @@ describe('Express Middleware Integration', () => {
 
     app.use(fonRouter.getRouter());
 
-    // Test FON route (should transform)
+    // Test FOON route (should transform)
     const fonResponse = await request(app)
       .post('/foon/users')
       .send({
@@ -97,7 +97,7 @@ describe('Express Middleware Integration', () => {
     const provider = new MockProvider();
     provider.setMockPlan({
       assignments: [
-        { from: '$.firstname', to: '$.name.given', confidence: 0.50 }, // Too low
+        { from: '$.firstname', to: '$.name.given', confidence: 0.5 }, // Too low
       ],
       drops: [],
       warnings: [],
@@ -136,9 +136,7 @@ describe('Express Middleware Integration', () => {
 
     const provider = new MockProvider();
     provider.setMockPlan({
-      assignments: [
-        { from: '$.firstname', to: '$.name.given', confidence: 0.50 },
-      ],
+      assignments: [{ from: '$.firstname', to: '$.name.given', confidence: 0.5 }],
       drops: [],
       warnings: [],
     });
@@ -227,7 +225,7 @@ describe('Express Middleware Integration', () => {
 
     app.use(fonRouter.getRouter());
 
-    // FON route should work
+    // FOON route should work
     await request(app).post('/foon/test').send({}).expect(200);
 
     // Original route should NOT exist

@@ -1,5 +1,5 @@
 /**
- * Error categories for FON SDK errors
+ * Error categories for FOON SDK errors
  */
 export enum ErrorCategory {
   SCHEMA_LOAD_ERROR = 'SCHEMA_LOAD_ERROR',
@@ -12,7 +12,7 @@ export enum ErrorCategory {
 }
 
 /**
- * Base error class for all FON SDK errors
+ * Base error class for all FOON SDK errors
  */
 export class FONError extends Error {
   constructor(

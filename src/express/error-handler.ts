@@ -3,7 +3,7 @@ import { FONError, ErrorCategory } from '../errors';
 import { ErrorHandler } from './types';
 
 /**
- * Default error handler for FON transformation errors
+ * Default error handler for FOON transformation errors
  */
 export const defaultErrorHandler: ErrorHandler = (
   error: FONError,

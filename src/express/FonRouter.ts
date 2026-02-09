@@ -5,12 +5,13 @@ import { createTransformMiddleware } from './transform-middleware';
 import { createErrorHandler } from './error-handler';
 
 /**
- * FON Router - Express router wrapper that creates FON-enabled routes
+ * FOON Router - Express router wrapper that creates FOON-enabled routes
  */
 export class FonRouter {
   private router: Router;
   private registry: RouteRegistry;
-  private config: Required<Omit<FonRouterConfig, 'onError' | 'cache'>> & Pick<FonRouterConfig, 'onError' | 'cache'>;
+  private config: Required<Omit<FonRouterConfig, 'onError' | 'cache'>> &
+    Pick<FonRouterConfig, 'onError' | 'cache'>;
   private errorHandler: ReturnType<typeof createErrorHandler>;
 
   constructor(config: FonRouterConfig) {
@@ -71,7 +72,9 @@ export class FonRouter {
   private registerRoute(method: HttpMethod, path: string, config: RouteConfig): void {
     // Check if method is supported
     if (!this.config.methods.includes(method)) {
-      console.warn(`Method ${method} is not in configured methods list. Skipping FON route creation.`);
+      console.warn(
+        `Method ${method} is not in configured methods list. Skipping FOON route creation.`
+      );
 
       // Still create original route if requested
       if (this.shouldCreateOriginal(config)) {
@@ -94,7 +97,7 @@ export class FonRouter {
       this.createOriginalRoute(method, path, config.handler);
     }
 
-    // Create FON route (prefixed)
+    // Create FOON route (prefixed)
     this.createFonRoute(method, path, config);
   }
 
@@ -111,7 +114,7 @@ export class FonRouter {
   }
 
   /**
-   * Create original route (without FON transformation)
+   * Create original route (without FOON transformation)
    */
   private createOriginalRoute(
     method: HttpMethod,
@@ -128,7 +131,7 @@ export class FonRouter {
   }
 
   /**
-   * Create FON route (with transformation)
+   * Create FOON route (with transformation)
    */
   private createFonRoute(method: HttpMethod, path: string, config: RouteConfig): void {
     const methodLower = method.toLowerCase() as 'post' | 'put' | 'patch' | 'delete';
@@ -146,12 +149,12 @@ export class FonRouter {
       verbose: this.config.verbose,
     });
 
-    // Register FON route with transform middleware
+    // Register FOON route with transform middleware
     const handlers = Array.isArray(config.handler) ? config.handler : [config.handler];
     this.router[methodLower](fonPath, transformMiddleware, ...handlers);
 
     if (this.config.verbose) {
-      console.log(`[FON] Created route: ${method} ${fonPath} -> ${path}`);
+      console.log(`[FOON] Created route: ${method} ${fonPath} -> ${path}`);
     }
   }
 
@@ -165,9 +168,9 @@ export class FonRouter {
 }
 
 /**
- * Create a new FON Router
+ * Create a new FOON Router
  * Returns a FonRouter instance with custom methods
- * Use .getRouter() to get the Express Router for app.use()
+ * Use .getRouter() to get Express Router for app.use()
  */
 export function createFonRouter(config: FonRouterConfig): FonRouter {
   return new FonRouter(config);

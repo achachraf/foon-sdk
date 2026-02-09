@@ -1,19 +1,21 @@
-# FON SDK Examples
+# FOON SDK Examples
 
-This folder contains example applications demonstrating how to use the FON SDK.
+This folder contains example applications demonstrating how to use the FOON SDK.
 
 ## Prerequisites
 
 1. **Install dependencies** from the root directory:
+
    ```bash
    npm install
    ```
 
 2. **Set up environment variables**:
-   Create a `.env.local` file in the root directory with your Gemini API key:
+   Create a `.env.local` file in the root directory with your OpenAI API key:
+
    ```
-   GEMINI_API_KEY=your_api_key_here
-   GEMINI_MODEL=gemini-1.5-flash
+   OPENAI_API_KEY=your_api_key_here
+   OPENAI_MODEL=gpt-5-nano
    ```
 
 3. **Build the SDK** (if not already built):
@@ -25,26 +27,30 @@ This folder contains example applications demonstrating how to use the FON SDK.
 
 ### 1. Basic Usage (`basic-usage.ts`)
 
-Demonstrates core FON SDK functionality without Express:
+Demonstrates core FOON SDK functionality without Express:
+
 - Simple field transformation
 - Type conversion (string to integer)
 - Nested field mapping
 - Validation failures
 
 **Run it:**
+
 ```bash
 npx ts-node examples/basic-usage.ts
 ```
 
 ### 2. Express CRUD App (`express-crud-app.ts`)
 
-Complete CRUD application using Express with FON middleware:
-- Dual routes (original + FON-transformed)
+Complete CRUD application using Express with FOON middleware:
+
+- Dual routes (original + FOON-transformed)
 - Create, Read, Update, Delete operations
 - Different schemas for create vs update
 - Real-time transformation of messy JSON input
 
 **Run it:**
+
 ```bash
 npx ts-node examples/express-crud-app.ts
 ```
@@ -58,11 +64,13 @@ The server will start on `http://localhost:3000`
 After starting the Express app, try these commands:
 
 #### 1. View available routes
+
 ```bash
 curl http://localhost:3000/
 ```
 
-#### 2. Create a user with messy fields (FON route)
+#### 2. Create a user with messy fields (FOON route)
+
 ```bash
 curl -X POST http://localhost:3000/foon/users \
   -H "Content-Type: application/json" \
@@ -75,13 +83,15 @@ curl -X POST http://localhost:3000/foon/users \
   }'
 ```
 
-**What happens:** FON transforms the messy fields to match the schema:
+**What happens:** FOON transforms the messy fields to match the schema:
+
 - `firstname` + `lastname` → `name.given` + `name.family`
 - `email_address` → `email`
 - `user_age` (string) → `age` (integer)
 - `user_role` → `role`
 
 #### 3. Create a user without transformation (original route)
+
 ```bash
 curl -X POST http://localhost:3000/users \
   -H "Content-Type: application/json" \
@@ -99,16 +109,19 @@ curl -X POST http://localhost:3000/users \
 **What happens:** No transformation, JSON must already match the schema.
 
 #### 4. Get all users
+
 ```bash
 curl http://localhost:3000/users
 ```
 
 #### 5. Get a specific user
+
 ```bash
 curl http://localhost:3000/users/1
 ```
 
-#### 6. Update a user with messy fields (FON route)
+#### 6. Update a user with messy fields (FOON route)
+
 ```bash
 curl -X PUT http://localhost:3000/foon/users/1 \
   -H "Content-Type: application/json" \
@@ -118,9 +131,10 @@ curl -X PUT http://localhost:3000/foon/users/1 \
   }'
 ```
 
-**What happens:** FON transforms `first` → `name.given`, `email_addr` → `email`
+**What happens:** FOON transforms `first` → `name.given`, `email_addr` → `email`
 
 #### 7. Update a user (original route)
+
 ```bash
 curl -X PUT http://localhost:3000/users/1 \
   -H "Content-Type: application/json" \
@@ -133,6 +147,7 @@ curl -X PUT http://localhost:3000/users/1 \
 ```
 
 #### 8. Delete a user
+
 ```bash
 curl -X DELETE http://localhost:3000/users/1
 ```
@@ -148,15 +163,17 @@ Import these requests or create them manually:
 5. **PUT** `http://localhost:3000/foon/users/:id` - Update with transformation
 6. **DELETE** `http://localhost:3000/users/:id` - Delete user
 
-## Key Differences: Original vs FON Routes
+## Key Differences: Original vs FOON Routes
 
 ### Original Routes (e.g., `POST /users`)
+
 - **No transformation** applied
 - JSON must **exactly match** the schema
 - Faster (no LLM call)
 - Use when you control the input format
 
-### FON Routes (e.g., `POST /foon/users`)
+### FOON Routes (e.g., `POST /foon/users`)
+
 - **Semantic transformation** applied
 - JSON can have **different field names**
 - LLM maps fields intelligently
@@ -165,7 +182,8 @@ Import these requests or create them manually:
 
 ## Response Headers
 
-FON routes include these headers:
+FOON routes include these headers:
+
 - `X-FON-Trace-Id` - Unique trace ID for debugging
 - `X-FON-Timing-Total` - Total processing time (verbose mode)
 - `X-FON-Timing-Proposal` - LLM call time (verbose mode)
@@ -174,7 +192,9 @@ FON routes include these headers:
 ## Error Handling
 
 ### Confidence Too Low
-If FON can't confidently map fields, you'll get a 400 error:
+
+If FOON can't confidently map fields, you'll get a 400 error:
+
 ```json
 {
   "error": "CONFIDENCE_TOO_LOW",
@@ -185,7 +205,9 @@ If FON can't confidently map fields, you'll get a 400 error:
 ```
 
 ### Validation Error
+
 If the transformed output doesn't match the schema:
+
 ```json
 {
   "error": "VALIDATION_ERROR",
@@ -198,27 +220,30 @@ If the transformed output doesn't match the schema:
 ## Tips
 
 1. **Enable verbose mode** to see detailed logs:
+
    ```typescript
-   createFonRouter({ provider, verbose: true })
+   createFonRouter({ provider, verbose: true });
    ```
 
 2. **Adjust confidence threshold** per route:
+
    ```typescript
    fonRouter.post('/users', {
      schema: userSchema,
      handler: createHandler,
-     confidenceThreshold: 0.90, // Higher threshold for critical routes
-   })
+     confidenceThreshold: 0.9, // Higher threshold for critical routes
+   });
    ```
 
-3. **Disable original routes** if you only want FON routes:
+3. **Disable original routes** if you only want FOON routes:
+
    ```typescript
-   createFonRouter({ provider, createOriginalRoutes: false })
+   createFonRouter({ provider, createOriginalRoutes: false });
    ```
 
 4. **Use caching** to reduce LLM calls:
    ```typescript
-   import { LRUCache } from 'fon-sdk';
+   import { LRUCache } from 'foon-sdk';
    const cache = new LRUCache({ max: 100 });
-   createFonRouter({ provider, cache })
+   createFonRouter({ provider, cache });
    ```

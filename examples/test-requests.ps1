@@ -1,11 +1,11 @@
-# FON SDK Express CRUD App - Test Requests (PowerShell)
+# FOON SDK Express CRUD App - Test Requests (PowerShell)
 # Make sure the Express app is running before executing this script:
 #   npx ts-node examples/express-crud-app.ts
 
 $BaseUrl = "http://localhost:3000"
 
 Write-Host "======================================" -ForegroundColor Cyan
-Write-Host "FON SDK Express CRUD App - Test Suite" -ForegroundColor Cyan
+Write-Host "FOON SDK Express CRUD App - Test Suite" -ForegroundColor Cyan
 Write-Host "======================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -14,8 +14,8 @@ Write-Host "1. GET / - View available routes" -ForegroundColor Blue
 Invoke-RestMethod -Uri "$BaseUrl/" -Method Get | ConvertTo-Json -Depth 10
 Write-Host ""
 
-# 2. Create user with FON transformation
-Write-Host "2. POST /foon/users - Create user with messy fields (FON transformation)" -ForegroundColor Blue
+# 2. Create user with FOON transformation
+Write-Host "2. POST /foon/users - Create user with messy fields (FOON transformation)" -ForegroundColor Blue
 Write-Host "   Input: firstname, lastname, email_address, user_age (string), user_role" -ForegroundColor Yellow
 $body1 = @{
     firstname = "John"
@@ -43,7 +43,7 @@ $body2 = @{
 Invoke-RestMethod -Uri "$BaseUrl/users" -Method Post -Body $body2 -ContentType "application/json" | ConvertTo-Json -Depth 10
 Write-Host ""
 
-# 4. Create another user with FON
+# 4. Create another user with FOON
 Write-Host "4. POST /foon/users - Create another user with different messy format" -ForegroundColor Blue
 $body3 = @{
     first_name = "Alice"
@@ -65,8 +65,8 @@ Write-Host "6. GET /users/1 - Get specific user" -ForegroundColor Blue
 Invoke-RestMethod -Uri "$BaseUrl/users/1" -Method Get | ConvertTo-Json -Depth 10
 Write-Host ""
 
-# 7. Update user with FON
-Write-Host "7. PUT /foon/users/1 - Update user with messy fields (FON transformation)" -ForegroundColor Blue
+# 7. Update user with FOON
+Write-Host "7. PUT /foon/users/1 - Update user with messy fields (FOON transformation)" -ForegroundColor Blue
 $body4 = @{
     first = "Jonathan"
     new_email = "jonathan@example.com"

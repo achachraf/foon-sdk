@@ -1,5 +1,5 @@
 {
-  "name": "fon-sdk",
+  "name": "foon-sdk",
   "version": "1.0.0",
   "description": "TypeScript SDK for semantic JSON transformation using LLMs - transforms free-form JSON to schema-compliant JSON",
   "main": "dist/index.js",
@@ -52,8 +52,8 @@
     "express",
     "middleware"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Achraf Achkari",
+  "license": "MIT",
   "dependencies": {
     "ajv": "^8.12.0",
     "ajv-formats": "^3.0.1",

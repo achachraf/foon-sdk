@@ -3,18 +3,18 @@ import { Provider, SecurityOptions, Cache } from '../types';
 import { FONError } from '../errors';
 
 /**
- * HTTP methods supported for FON transformation
+ * HTTP methods supported for FOON transformation
  */
 export type HttpMethod = 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 /**
- * Configuration for FON Router
+ * Configuration for FOON Router
  */
 export interface FonRouterConfig {
   /** LLM provider instance (required) */
   provider: Provider;
 
-  /** Route prefix for FON routes (default: '/foon') */
+  /** Route prefix for FOON routes (default: '/foon') */
   prefix?: string;
 
   /** HTTP methods to transform (default: ['POST', 'PUT', 'PATCH']) */
@@ -35,7 +35,7 @@ export interface FonRouterConfig {
   /** Custom error handler */
   onError?: ErrorHandler;
 
-  /** Create original routes alongside FON routes (default: true) */
+  /** Create original routes alongside FOON routes (default: true) */
   createOriginalRoutes?: boolean;
 
   /** Verbose mode for debugging (default: false) */
@@ -81,7 +81,7 @@ export interface RouteEntry {
 }
 
 /**
- * FON Router interface
+ * FOON Router interface
  */
 export interface IFonRouter {
   /** Register POST route with schema */
