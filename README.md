@@ -562,7 +562,9 @@ npm run build
 
 ## License
 
-ISC
+MIT License - Copyright (c) 2026 Achraf Achkari
+
+See [LICENSE](LICENSE) for details.
 
 ## Contributing
 
