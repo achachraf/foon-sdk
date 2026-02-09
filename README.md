@@ -541,8 +541,11 @@ interface TraceReport {
 ## Testing
 
 ```bash
-# Run all tests
+# Run deterministic tests (unit + integration, no external providers)
 npm test
+
+# Run all tests (including e2e provider tests)
+npm run test:all
 
 # Unit tests only
 npm run test:unit
@@ -550,7 +553,7 @@ npm run test:unit
 # Integration tests
 npm run test:integration
 
-# E2E tests (requires OpenAI API key in .env.local)
+# E2E tests (requires provider credentials in .env.local)
 npm run test:e2e
 ```
 
@@ -568,4 +571,4 @@ See [LICENSE](LICENSE) for details.
 
 ## Contributing
 
-Issues and pull requests welcome at [GitHub repository URL]
+Issues and pull requests are welcome.

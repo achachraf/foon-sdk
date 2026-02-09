@@ -24,7 +24,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build:watch": "tsc -p tsconfig.build.json --watch",
-    "test": "jest",
+    "test": "jest --testPathIgnorePatterns=e2e",
+    "test:all": "jest",
+    "test:publish": "npm run test",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:unit": "jest --testPathPattern=unit",
@@ -36,7 +38,7 @@
     "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
-    "prepublishOnly": "npm run build && npm test",
+    "prepublishOnly": "npm run build && npm run test:publish",
     "example:basic": "ts-node examples/basic-usage.ts",
     "example:express": "ts-node examples/express-crud-app.ts"
   },
